@@ -2,16 +2,19 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>codex-playground</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Minesweeper</title>
+    <link rel="stylesheet" href="style.css">
   </head>
   <body>
-    <h1>codex-playground</h1>
-    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla vitae elit libero, a pharetra augue.</p>
-    <nav>
-      <ul>
-        <li><a href="about.html">About</a></li>
-        <li><a href="contact.html">Contact</a></li>
-      </ul>
-    </nav>
+    <div id="game">
+      <h1>Minesweeper</h1>
+      <div id="info">
+        <span id="mines"></span>
+        <button id="reset">Reset</button>
+      </div>
+      <div id="board" class="board"></div>
+    </div>
+    <script src="script.js"></script>
   </body>
 </html>
