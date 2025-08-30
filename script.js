@@ -3,6 +3,7 @@ const rows = 15;
 const minesTotal = 30;
 let board = [];
 let flagsPlaced = 0;
+let gameOver = false;
 
 const boardEl = document.getElementById('board');
 const minesEl = document.getElementById('mines');
@@ -11,6 +12,7 @@ const resetBtn = document.getElementById('reset');
 function init() {
   board = [];
   flagsPlaced = 0;
+  gameOver = false;
   boardEl.innerHTML = '';
   boardEl.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
 
@@ -29,11 +31,31 @@ function init() {
       cell.el.classList.add('cell');
       cell.el.dataset.r = r;
       cell.el.dataset.c = c;
-      cell.el.addEventListener('click', () => revealCell(r, c));
+      cell.el.addEventListener('click', () => {
+        if (!gameOver) revealCell(r, c);
+      });
       cell.el.addEventListener('contextmenu', (e) => {
         e.preventDefault();
         toggleFlag(r, c);
       });
+
+      let pressTimer;
+      let longPress = false;
+      cell.el.addEventListener('touchstart', () => {
+        if (gameOver) return;
+        pressTimer = setTimeout(() => {
+          longPress = true;
+          toggleFlag(r, c);
+        }, 500);
+      }, { passive: true });
+      cell.el.addEventListener('touchend', (e) => {
+        clearTimeout(pressTimer);
+        if (longPress) {
+          longPress = false;
+          e.preventDefault();
+        }
+      }, { passive: false });
+      cell.el.addEventListener('touchmove', () => clearTimeout(pressTimer));
       boardEl.appendChild(cell.el);
       row.push(cell);
     }
@@ -76,6 +98,7 @@ function calculateNumbers() {
 }
 
 function revealCell(r, c) {
+  if (gameOver) return;
   const cell = board[r][c];
   if (cell.revealed || cell.flag) return;
   cell.revealed = true;
@@ -84,7 +107,8 @@ function revealCell(r, c) {
   if (cell.mine) {
     cell.el.classList.add('mine');
     revealAllMines();
-    alert('Game Over');
+    gameOver = true;
+    alert('Вы проиграли');
     return;
   }
 
@@ -107,6 +131,7 @@ function revealCell(r, c) {
 }
 
 function toggleFlag(r, c) {
+  if (gameOver) return;
   const cell = board[r][c];
   if (cell.revealed) return;
   cell.flag = !cell.flag;
@@ -134,12 +159,13 @@ function checkWin() {
   }
   if (revealedCount === rows * cols - minesTotal) {
     revealAllMines();
-    alert('You win!');
+    gameOver = true;
+    alert('Вы выиграли!');
   }
 }
 
 function updateMines() {
-  minesEl.textContent = `Mines: ${minesTotal - flagsPlaced}`;
+  minesEl.textContent = `Мины: ${minesTotal - flagsPlaced}`;
 }
 
 resetBtn.addEventListener('click', init);
