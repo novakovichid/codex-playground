@@ -8,6 +8,9 @@ from app.db.session import init_db
 settings = get_settings()
 app = FastAPI(title=settings.app_name)
 
+# Ensure database schema exists before serving requests or running tests
+init_db()
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],

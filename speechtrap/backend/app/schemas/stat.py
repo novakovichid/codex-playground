@@ -13,3 +13,10 @@ class PlayerStatPublic(BaseModel):
 
     class Config:
         from_attributes = True
+
+
+class PlayerStatUpdate(BaseModel):
+    games_played: int
+    games_won: int
+    words_guessed: int
+    words_explained: int
