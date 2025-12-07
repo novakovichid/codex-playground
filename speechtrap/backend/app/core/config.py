@@ -6,8 +6,8 @@ class Settings(BaseSettings):
     app_name: str = "SpeechTrap API"
     environment: str = "development"
     secret_key: str = "change-me"
-    database_url: str = "postgresql+psycopg2://speechtrap:speechtrap@db:5432/speechtrap"
-    test_database_url: str = "postgresql+psycopg2://speechtrap_test:speechtrap@db:5432/speechtrap_test"
+    database_url: str = "sqlite:///./speechtrap.db"
+    test_database_url: str = "sqlite:///./speechtrap_test.db"
     access_token_expire_minutes: int = 60
 
     class Config:

@@ -1,0 +1,7 @@
+backend/speechtrap.db
+backend/speechtrap_test.db
+speechtrap.db
+__pycache__/
+*.pyc
+node_modules/
+frontend/node_modules/
