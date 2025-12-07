@@ -1,4 +1,5 @@
 import { LobbyCard } from './components/LobbyCard'
+import { ModeCard } from './components/ModeCard'
 import { Roadmap } from './components/Roadmap'
 
 function App() {
@@ -32,6 +33,40 @@ function App() {
             description="Система рейтингов и статистика игроков фиксирует победы, угаданные и объясненные слова."
             buttonText="Открыть профиль"
           />
+
+          <div className="space-y-3 rounded-2xl border border-slate-800 bg-slate-900/50 p-6 shadow-lg shadow-purple-500/10">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm uppercase text-slate-400">Игровые режимы</p>
+                <h2 className="text-2xl font-bold text-slate-50">Без интернета и в одиночку</h2>
+                <p className="text-slate-400">Добавили офлайн-возможности и локальный ИИ для быстрых запусков.</p>
+              </div>
+              <div className="rounded-full bg-emerald-500/10 px-3 py-1 text-xs font-semibold text-emerald-200">Новое</div>
+            </div>
+            <div className="grid gap-4 md:grid-cols-2">
+              <ModeCard
+                title="Hot-seat офлайн"
+                description="Играйте на одном устройстве: экран передается от рассказчика к угадывающим без подключения к сети."
+                badge="Оффлайн"
+                accent="emerald"
+                items={[
+                  'Локальный список заданий и таймер раунда без API.',
+                  'Ротация ролей с подсказками, кому передать устройство.',
+                  'Подсчет очков и пауза/ресет прямо на устройстве.',
+                ]}
+              />
+              <ModeCard
+                title="Одиночный режим с ИИ"
+                description="Устройте тренировку: виртуальный напарник генерирует задания и реагирует на ваши ответы."
+                badge="ИИ"
+                items={[
+                  'Набор подсказок и ограниченных подсчетов, имитирующих настоящего игрока.',
+                  'Авто-генерация слов по выбранной теме без внешних сервисов.',
+                  'Динамическая сложность: чем лучше играете, тем строже ИИ.',
+                ]}
+              />
+            </div>
+          </div>
         </section>
 
         <aside className="space-y-4">
