@@ -1,0 +1,30 @@
+version: '3.9'
+services:
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: speechtrap
+      POSTGRES_PASSWORD: speechtrap
+      POSTGRES_DB: speechtrap
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+  backend:
+    build:
+      context: ./backend
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000
+    environment:
+      DATABASE_URL: postgresql+psycopg2://speechtrap:speechtrap@db:5432/speechtrap
+    depends_on:
+      - db
+    ports:
+      - "8000:8000"
+  frontend:
+    build:
+      context: ./frontend
+    command: npm run build && npm run preview -- --host 0.0.0.0 --port 4173
+    depends_on:
+      - backend
+    ports:
+      - "4173:4173"
+volumes:
+  pgdata:
