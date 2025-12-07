@@ -1,9 +1,3 @@
-![pylint](https://img.shields.io/badge/Pylint%20Score-9.09-yellow?logo=python&logoColor=white)
-![Python](https://img.shields.io/badge/Python-3.11-blue?logo=python&logoColor=white)
-![FastAPI](https://img.shields.io/badge/FastAPI-0.115.8-009688?logo=fastapi&logoColor=white)
-![React](https://img.shields.io/badge/React-19.1.0-61DAFB?logo=react&logoColor=white)
-![PostgreSQL](https://img.shields.io/badge/PostgreSQL-13-336791?logo=postgresql&logoColor=white)
-
 # SpeechTrap 🎯
 
 Электронная версия популярной настольной игры Taboo. Игроки описывают слова, не используя запрещенные слова, а другие участники должны их угадать.
