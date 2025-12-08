@@ -1,5 +1,6 @@
 import { FormEvent, useMemo, useState } from 'react'
 
+import { HotSeat } from './components/HotSeat'
 import { LobbyCard } from './components/LobbyCard'
 import { ModeCard } from './components/ModeCard'
 
@@ -284,6 +285,10 @@ function App() {
       </header>
 
       <main className="mx-auto grid max-w-5xl gap-6 px-6 py-10 lg:grid-cols-3">
+        <div className="lg:col-span-3">
+          <HotSeat />
+        </div>
+
         <section className="lg:col-span-2 space-y-4">
           <form
             onSubmit={handleRegister}
