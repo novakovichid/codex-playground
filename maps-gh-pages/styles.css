@@ -95,10 +95,10 @@ body {
 
 .layout {
   display: grid;
-  grid-template-columns: 340px 340px 1fr;
+  grid-template-columns: clamp(300px, 23vw, 360px) clamp(300px, 23vw, 360px) minmax(520px, 1fr);
   gap: 16px;
-  padding: 20px;
-  max-width: 1420px;
+  padding: 20px clamp(16px, 3vw, 32px);
+  max-width: min(1800px, 96vw);
   margin: 0 auto 80px;
 }
 
@@ -111,7 +111,7 @@ body {
 }
 
 .panel.wide {
-  grid-column: span 1;
+  grid-column: 1 / -1;
 }
 
 .panel-header h2 {
@@ -210,7 +210,7 @@ textarea {
   display: flex;
   flex-direction: column;
   gap: 8px;
-  max-height: 220px;
+  max-height: clamp(200px, 24vh, 340px);
   overflow: auto;
   margin-bottom: 12px;
 }
@@ -273,9 +273,9 @@ textarea {
 
 .editor {
   display: grid;
-  grid-template-columns: 2fr 340px;
+  grid-template-columns: minmax(540px, 2fr) minmax(300px, 420px);
   gap: 14px;
-  min-height: 560px;
+  min-height: clamp(520px, 65vh, 820px);
 }
 
 .canvas {

@@ -1,8 +1,25 @@
 (() => {
+  const memoryStore = {};
   const STORAGE_KEYS = {
     profile: 'mappu_profile',
     maps: 'mappu_maps'
   };
+
+  function readStorage(key) {
+    try {
+      return localStorage.getItem(key);
+    } catch (e) {
+      return memoryStore[key] || null;
+    }
+  }
+
+  function writeStorage(key, value) {
+    try {
+      localStorage.setItem(key, value);
+    } catch (e) {
+      memoryStore[key] = value;
+    }
+  }
 
   const dom = {
     profileForm: document.getElementById('profileForm'),
@@ -78,7 +95,7 @@
       return `${prefix}_${Math.random().toString(36).slice(2, 8)}`;
     },
     getShareLink(map) {
-      const payload = btoa(unescape(encodeURIComponent(JSON.stringify(map))));
+      const payload = btoa(encodeURIComponent(JSON.stringify(map)));
       const url = new URL(window.location.href);
       url.hash = `share=${payload}`;
       return url.toString();
@@ -96,7 +113,7 @@
   };
 
   function loadProfile() {
-    const raw = localStorage.getItem(STORAGE_KEYS.profile);
+    const raw = readStorage(STORAGE_KEYS.profile);
     if (raw) {
       return utils.safeJSON(raw) || defaultProfile();
     }
@@ -113,22 +130,22 @@
   }
 
   function saveProfile(profile) {
-    localStorage.setItem(STORAGE_KEYS.profile, JSON.stringify(profile));
+    writeStorage(STORAGE_KEYS.profile, JSON.stringify(profile));
   }
 
   function loadMaps() {
-    const raw = localStorage.getItem(STORAGE_KEYS.maps);
+    const raw = readStorage(STORAGE_KEYS.maps);
     if (raw) {
       const parsed = utils.safeJSON(raw);
       if (parsed && Array.isArray(parsed)) return parsed;
     }
     const starter = createStarterMaps();
-    localStorage.setItem(STORAGE_KEYS.maps, JSON.stringify(starter));
+    writeStorage(STORAGE_KEYS.maps, JSON.stringify(starter));
     return starter;
   }
 
   function persistMaps() {
-    localStorage.setItem(STORAGE_KEYS.maps, JSON.stringify(state.maps));
+    writeStorage(STORAGE_KEYS.maps, JSON.stringify(state.maps));
   }
 
   function createStarterMaps() {
@@ -210,12 +227,22 @@
         card.className = 'map-card';
         const meta = document.createElement('div');
         meta.className = 'meta';
-        meta.innerHTML = `
-          <h3>${map.title}</h3>
-          <p>${map.description || 'Без описания'}</p>
-          <div class="tags">${map.tags.map((t) => `<span class="tag">${t}</span>`).join('')}</div>
-          <small class="muted">${map.visibility === 'public' ? 'Публичная' : 'Приватная'} · обновлена ${utils.formatDate(map.updatedAt)}</small>
-        `;
+        const title = document.createElement('h3');
+        title.textContent = map.title;
+        const desc = document.createElement('p');
+        desc.textContent = map.description || 'Без описания';
+        const tagsWrap = document.createElement('div');
+        tagsWrap.className = 'tags';
+        map.tags.forEach((tag) => {
+          const tagEl = document.createElement('span');
+          tagEl.className = 'tag';
+          tagEl.textContent = tag;
+          tagsWrap.append(tagEl);
+        });
+        const metaLine = document.createElement('small');
+        metaLine.className = 'muted';
+        metaLine.textContent = `${map.visibility === 'public' ? 'Публичная' : 'Приватная'} · обновлена ${utils.formatDate(map.updatedAt)}`;
+        meta.append(title, desc, tagsWrap, metaLine);
         const actions = document.createElement('div');
         actions.className = 'actions';
         const openBtn = document.createElement('button');
@@ -357,11 +384,19 @@
       el.style.left = `${node.x}px`;
       el.style.top = `${node.y}px`;
       el.dataset.id = node.id;
-      el.innerHTML = `
-        <h4>${node.label}</h4>
-        <small>${node.tags.join(' ')}</small>
-        <div class="node-tags">${node.tags.map((t) => `<span class="node-tag">${t}</span>`).join('')}</div>
-      `;
+      const title = document.createElement('h4');
+      title.textContent = node.label;
+      const hint = document.createElement('small');
+      hint.textContent = node.tags.join(' ');
+      const tagsWrap = document.createElement('div');
+      tagsWrap.className = 'node-tags';
+      node.tags.forEach((tag) => {
+        const tagEl = document.createElement('span');
+        tagEl.className = 'node-tag';
+        tagEl.textContent = tag;
+        tagsWrap.append(tagEl);
+      });
+      el.append(title, hint, tagsWrap);
       makeDraggable(el, node);
       dom.nodeLayer.append(el);
     });
@@ -555,7 +590,7 @@
     if (raw.includes('share=')) {
       const encoded = raw.split('share=')[1];
       try {
-        json = JSON.parse(decodeURIComponent(escape(atob(encoded))));
+        json = JSON.parse(decodeURIComponent(atob(encoded)));
       } catch (e) {
         json = null;
       }
@@ -582,7 +617,7 @@
     if (!window.location.hash.startsWith('#share=')) return;
     const encoded = window.location.hash.replace('#share=', '');
     try {
-      const data = JSON.parse(decodeURIComponent(escape(atob(encoded))));
+      const data = JSON.parse(decodeURIComponent(atob(encoded)));
       if (data && data.title) {
         const imported = {
           ...data,
@@ -606,8 +641,9 @@
   function handleCanvasClick(e) {
     const map = getCurrentMap();
     if (!map) return;
+    if (e.target.closest('.node')) return;
+    if (!dom.canvas.contains(e.target)) return;
     const rect = dom.canvas.getBoundingClientRect();
-    if (e.target !== dom.canvas) return;
     map.nodes.push({
       id: utils.randomId('node'),
       label: 'Новый узел',
