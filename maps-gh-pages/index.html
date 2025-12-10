@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Mappu — карты для GitHub Pages</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <div class="logo">🗺️</div>
+      <div>
+        <div class="brand-title">Mappu</div>
+        <div class="brand-subtitle">Интерактивные карты без сервера</div>
+      </div>
+    </div>
+    <div class="profile-summary">
+      <div class="profile-avatar" id="profileAvatar">👤</div>
+      <div>
+        <div class="profile-name" id="profileName">Незнакомец</div>
+        <div class="profile-email" id="profileEmail">Подключите профиль</div>
+      </div>
+      <button class="btn ghost" id="openProfile">Профиль</button>
+    </div>
+  </header>
+
+  <main class="layout">
+    <section class="panel" id="profilePanel">
+      <div class="panel-header">
+        <h2>Профиль</h2>
+        <p>Сохраните данные локально — они пригодятся в публикациях.</p>
+      </div>
+      <form id="profileForm" class="stack">
+        <label class="field">
+          <span>Имя</span>
+          <input type="text" id="profileFullName" placeholder="Имя и фамилия" required />
+        </label>
+        <label class="field">
+          <span>Email</span>
+          <input type="email" id="profileEmailInput" placeholder="you@example.com" />
+        </label>
+        <label class="field">
+          <span>Статус</span>
+          <input type="text" id="profileHeadline" placeholder="Например, исследую связи идей" />
+        </label>
+        <label class="field">
+          <span>Иконка (эмодзи или буква)</span>
+          <input type="text" id="profileAvatarInput" maxlength="2" placeholder="🧭" />
+        </label>
+        <div class="actions">
+          <button type="submit" class="btn primary">Сохранить профиль</button>
+          <button type="button" id="resetProfile" class="btn ghost">Сбросить</button>
+        </div>
+      </form>
+    </section>
+
+    <section class="panel">
+      <div class="panel-header">
+        <h2>Карты</h2>
+        <p>Создавайте, публикуйте и фильтруйте карты. Данные — в LocalStorage, шэринг — через ссылку.</p>
+      </div>
+      <div class="filters">
+        <input type="text" id="searchInput" placeholder="Поиск по названию или #тегу" />
+        <div class="filter-toggle">
+          <label><input type="checkbox" id="publicOnly" /> Только публичные</label>
+        </div>
+      </div>
+      <div class="map-list" id="mapList"></div>
+      <form id="mapForm" class="stack">
+        <div class="split">
+          <label class="field">
+            <span>Название</span>
+            <input type="text" id="mapTitle" placeholder="Новая карта" required />
+          </label>
+          <label class="field">
+            <span>Доступ</span>
+            <select id="mapVisibility">
+              <option value="public">Публичная</option>
+              <option value="private">Приватная</option>
+            </select>
+          </label>
+        </div>
+        <label class="field">
+          <span>Описание</span>
+          <textarea id="mapDescription" placeholder="Расскажите, что ищем на карте" rows="2"></textarea>
+        </label>
+        <label class="field">
+          <span>Хэштеги (через запятую)</span>
+          <input type="text" id="mapTags" placeholder="#идея, #маршрут" />
+        </label>
+        <div class="actions">
+          <button type="submit" class="btn primary">Сохранить карту</button>
+          <button type="button" id="publishMap" class="btn">Опубликовать ссылку</button>
+          <button type="button" id="duplicateMap" class="btn ghost">Дублировать</button>
+          <button type="button" id="deleteMap" class="btn danger">Удалить</button>
+        </div>
+      </form>
+      <details class="help">
+        <summary>Как делиться?</summary>
+        <p>После публикации получите ссылку с данными карты. Достаточно открыть её в браузере — карта импортируется в LocalStorage как публичная копия.</p>
+        <p>Если нужен JSON, воспользуйтесь кнопкой «Экспорт» в списке карт.</p>
+      </details>
+    </section>
+
+    <section class="panel wide">
+      <div class="panel-header">
+        <div>
+          <h2 id="editorTitle">Редактор карты</h2>
+          <p id="editorSubtitle">Добавляйте узлы, перемещайте их и связывайте ребрами.</p>
+        </div>
+        <div class="chip" id="mapStatus">Нет активной карты</div>
+      </div>
+      <div class="editor">
+        <div class="canvas" id="canvas">
+          <svg id="edgeLayer"></svg>
+          <div id="nodeLayer"></div>
+          <div class="canvas-hint" id="canvasHint">Создайте карту и добавьте первый узел</div>
+        </div>
+        <aside class="editor-controls">
+          <form id="nodeForm" class="stack">
+            <h3>Узел</h3>
+            <label class="field">
+              <span>Название</span>
+              <input type="text" id="nodeLabel" placeholder="Новый узел" required />
+            </label>
+            <label class="field">
+              <span>Теги узла</span>
+              <input type="text" id="nodeTags" placeholder="#ключ, #пример" />
+            </label>
+            <label class="field">
+              <span>Цвет</span>
+              <input type="color" id="nodeColor" value="#2563eb" />
+            </label>
+            <div class="actions">
+              <button type="submit" class="btn primary">Добавить</button>
+              <button type="button" id="centerNodes" class="btn ghost">Выровнять</button>
+            </div>
+          </form>
+          <form id="edgeForm" class="stack">
+            <h3>Связь</h3>
+            <label class="field">
+              <span>От</span>
+              <select id="edgeFrom"></select>
+            </label>
+            <label class="field">
+              <span>К</span>
+              <select id="edgeTo"></select>
+            </label>
+            <label class="field">
+              <span>Описание</span>
+              <input type="text" id="edgeLabel" placeholder="Например, зависит от" />
+            </label>
+            <button type="submit" class="btn primary">Добавить связь</button>
+          </form>
+          <form id="importForm" class="stack">
+            <h3>Импорт</h3>
+            <label class="field">
+              <span>JSON или ссылка поделиться</span>
+              <textarea id="importInput" rows="4" placeholder="Вставьте JSON или share-ссылку"></textarea>
+            </label>
+            <button type="submit" class="btn">Импортировать как новую карту</button>
+          </form>
+          <div class="export-box">
+            <h3>Поделиться</h3>
+            <textarea id="shareOutput" readonly rows="3" placeholder="Сначала опубликуйте карту"></textarea>
+            <div class="actions">
+              <button id="copyShare" class="btn ghost" type="button">Скопировать</button>
+              <button id="exportMap" class="btn" type="button">Экспорт JSON</button>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">Работает полностью в браузере. Данные сохраняются в LocalStorage, поэтому на GitHub Pages всё будет доступно без серверной части.</footer>
+  <script src="app.js"></script>
+</body>
+</html>
