@@ -21,6 +21,38 @@
     }
   }
 
+  const utils = {
+    parseTags(str) {
+      return str
+        .split(',')
+        .map((t) => t.trim())
+        .filter(Boolean)
+        .map((t) => (t.startsWith('#') ? t : `#${t}`));
+    },
+    formatDate(ts) {
+      return new Date(ts).toLocaleString('ru-RU', { dateStyle: 'short', timeStyle: 'short' });
+    },
+    randomId(prefix) {
+      return `${prefix}_${Math.random().toString(36).slice(2, 8)}`;
+    },
+    getShareLink(map) {
+      const payload = btoa(encodeURIComponent(JSON.stringify(map)));
+      const url = new URL(window.location.href);
+      url.hash = `share=${payload}`;
+      return url.toString();
+    },
+    safeJSON(str) {
+      try {
+        return JSON.parse(str);
+      } catch (e) {
+        return null;
+      }
+    },
+    clone(obj) {
+      return JSON.parse(JSON.stringify(obj));
+    }
+  };
+
   const dom = {
     profileForm: document.getElementById('profileForm'),
     profileFullName: document.getElementById('profileFullName'),
@@ -78,38 +110,6 @@
     profile: loadProfile(),
     maps: loadMaps(),
     currentMapId: null
-  };
-
-  const utils = {
-    parseTags(str) {
-      return str
-        .split(',')
-        .map((t) => t.trim())
-        .filter(Boolean)
-        .map((t) => (t.startsWith('#') ? t : `#${t}`));
-    },
-    formatDate(ts) {
-      return new Date(ts).toLocaleString('ru-RU', { dateStyle: 'short', timeStyle: 'short' });
-    },
-    randomId(prefix) {
-      return `${prefix}_${Math.random().toString(36).slice(2, 8)}`;
-    },
-    getShareLink(map) {
-      const payload = btoa(encodeURIComponent(JSON.stringify(map)));
-      const url = new URL(window.location.href);
-      url.hash = `share=${payload}`;
-      return url.toString();
-    },
-    safeJSON(str) {
-      try {
-        return JSON.parse(str);
-      } catch (e) {
-        return null;
-      }
-    },
-    clone(obj) {
-      return JSON.parse(JSON.stringify(obj));
-    }
   };
 
   function loadProfile() {
