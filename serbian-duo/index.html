@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>SerboLingo · Сербский как в Duolingo</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <div class="brand">
+        <div class="owl" aria-hidden="true">🦉</div>
+        <div>
+          <div class="brand-name">SerboLingo</div>
+          <div class="brand-sub">Геймификация в духе Duolingo</div>
+        </div>
+      </div>
+      <div class="pill-row">
+        <div class="pill" id="xp-pill" aria-live="polite">⚡ XP: <span id="xp-value">0</span></div>
+        <div class="pill" id="streak-pill">🔥 Серия: <span id="streak-value">1</span></div>
+        <div class="pill" id="heart-pill">❤️ Жизни: <span id="heart-value">5</span></div>
+      </div>
+    </header>
+
+    <main class="content">
+      <section class="hero">
+        <div>
+          <p class="eyebrow">Минимально жизнеспособный продукт уже готов</p>
+          <h1>Изучи сербский как в Duolingo прямо в браузере</h1>
+          <p class="lede">Два режима тренировки, прогресс и слова сохраняются локально. Подходит для iPhone 15 Pro Max и экранов 16:9.</p>
+          <div class="cta-row">
+            <button class="btn btn-primary" data-start-mode="choice">Начать с выбором ответа</button>
+            <button class="btn btn-ghost" data-start-mode="typing">Практика ввода перевода</button>
+          </div>
+        </div>
+        <div class="card stats-card">
+          <div class="stats-header">Текущая цель</div>
+          <div class="goal-value" id="goal-value">120 XP</div>
+          <div class="progress">
+            <div class="progress-fill" id="goal-progress" style="width: 10%"></div>
+          </div>
+          <p class="muted">Цель на сегодня можно превысить — XP копятся автоматически.</p>
+        </div>
+      </section>
+
+      <section class="grid" aria-label="Режимы тренировки">
+        <article class="card mode-card" id="choice-card">
+          <div class="card-head">Режим 1 · Выбор ответа</div>
+          <p>Выбирайте правильный перевод сербского слова или фразы. Каждое правильное решение добавляет XP и ускоряет прогресс.</p>
+          <button class="btn btn-primary" data-start-mode="choice">Стартовать</button>
+        </article>
+        <article class="card mode-card" id="typing-card">
+          <div class="card-head">Режим 2 · Ввод перевода</div>
+          <p>Вводите перевод вручную, чтобы укрепить навык. Подсказки и транслитерация помогут не сбиться.</p>
+          <button class="btn btn-primary" data-start-mode="typing">Стартовать</button>
+        </article>
+        <article class="card info-card">
+          <div class="card-head">Большая база слов</div>
+          <p>Сотни слов и выражений по темам: приветствия, путешествия, еда, чувства, семья и многое другое. Все уже встроено и готово к изучению.</p>
+          <p class="muted">Прогресс по каждому слову сохраняется в вашем браузере.</p>
+        </article>
+      </section>
+
+      <section class="card session" id="session" aria-live="polite">
+        <div class="session-top">
+          <div class="session-mode" id="session-mode">Выберите режим, чтобы начать тренировку</div>
+          <div class="session-score">Очки сеанса: <span id="session-score">0</span></div>
+        </div>
+        <div class="session-progress">
+          <div class="progress">
+            <div class="progress-fill" id="session-progress" style="width: 0%"></div>
+          </div>
+          <div class="progress-label">Вопрос <span id="question-index">0</span>/10</div>
+        </div>
+        <div class="question" id="question-area">
+          <div class="prompt" id="prompt">Выберите режим, чтобы увидеть задания</div>
+          <div class="options" id="options"></div>
+          <form class="typing" id="typing-form">
+            <label for="typing-input" class="sr-only">Введите перевод</label>
+            <input type="text" id="typing-input" placeholder="Введите перевод" autocomplete="off" />
+            <div class="hint" id="hint"></div>
+            <button type="submit" class="btn btn-primary">Проверить</button>
+          </form>
+        </div>
+        <div class="feedback" id="feedback" role="status"></div>
+        <div class="session-actions" id="session-actions">
+          <button class="btn btn-ghost" id="skip">Пропустить</button>
+          <button class="btn btn-primary" id="next" disabled>Следующий вопрос</button>
+        </div>
+      </section>
+
+      <section class="card vocab-card" id="vocab-card">
+        <div class="card-head">Словарь</div>
+        <p class="muted">Сербские слова с переводом и транслитерацией. Нажмите на слово, чтобы отметить его как выученное.</p>
+        <div class="vocab-grid" id="vocab-grid"></div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <div>Работает полностью офлайн, все данные хранятся в Local Storage.</div>
+      <div class="muted">Вдохновлено Duolingo · Сербский для носителей русского.</div>
+    </footer>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
