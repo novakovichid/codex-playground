@@ -405,11 +405,16 @@ function shuffle(array) {
 }
 
 function normalize(value) {
-  return value.normalize('NFD').replace(/\p{Diacritic}/gu, '').trim().toLowerCase();
+  if (!value) return '';
+  return value
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .trim()
+    .toLowerCase();
 }
 
 function matchesAnswer(answer, target) {
-  return normalize(target) === answer;
+  return normalize(target) === normalize(answer);
 }
 
 function feedback(message, tone = 'success') {
